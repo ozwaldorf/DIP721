@@ -2,6 +2,7 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 source "${BASH_SOURCE%/*}/.scripts/required.sh"
 
 DFX_IDENTITY_PRINCIPAL=""
@@ -85,6 +86,9 @@ then
 fi
 
 printf "🌈 Cap Service running as canister id (%s)\n\n" "$CANISTER_CAP_ID"
+=======
+source "${BASH_SOURCE%/*}/.scripts/required.sh"
+>>>>>>> ce311b7 (fix: 🐛 use no-wallet when nft deploy and some refactoring)
 
 DFX_IDENTITY_PRINCIPAL=""
 
@@ -177,7 +181,7 @@ deploy() {
 >>>>>>> 22c9dd1 (refactor: 💡 improve bootstrap service, verified, move tests as healthcheck)
 =======
 
-  dfx deploy nft --argument "(principal \"$DFX_IDENTITY_PRINCIPAL\", \"tkn\", \"token\", principal \"$CANISTER_CAP_ID\")"
+  dfx deploy --no-wallet nft --argument "(principal \"$DFX_IDENTITY_PRINCIPAL\", \"tkn\", \"token\", principal \"$CANISTER_CAP_ID\")"
 
   printf "\n\n"
 >>>>>>> 68f6331 (refactor: 💡 split required as separate script, update docs, improve readability of process)

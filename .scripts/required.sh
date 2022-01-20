@@ -18,11 +18,7 @@ then
   exit 0;
 fi
 
-<<<<<<< HEAD
-=======
-cd "$(dirname "${BASH_SOURCE[0]}")" || exit;
 
->>>>>>> 68f6331 (refactor: 💡 split required as separate script, update docs, improve readability of process)
 TEMP_DIR="./.temp"
 
 printf "🙏 Verifying the Cap Service status, please wait...\n\n"

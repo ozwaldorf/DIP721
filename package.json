@@ -9,14 +9,6 @@
   "scripts": {
     "cap:start": "cd ./cap && dfx deploy ic-history-router && mkdir -p ../.temp && dfx canister id ic-history-router > ../.temp/ic-history-router-id",
     "dip721:healthcheck": "./healthcheck.sh",
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "reset": "dfx stop && rm -rf .dfx && rm -rf ./target && rm -rf ./cap/.dfx && rm -rf ./cap/target && rm -rf ./.temp"
-=======
     "reset": "rm -rf .dfx && rm -rf ./target && rm -rf ./cap/.dfx && rm -rf ./cap/target && rm -rf ./.temp"
->>>>>>> 22c9dd1 (refactor: 💡 improve bootstrap service, verified, move tests as healthcheck)
-=======
-    "reset": "dfx stop && rm -rf .dfx && rm -rf ./target && rm -rf ./cap/.dfx && rm -rf ./cap/target && rm -rf ./.temp"
->>>>>>> 68f6331 (refactor: 💡 split required as separate script, update docs, improve readability of process)
   }
 }

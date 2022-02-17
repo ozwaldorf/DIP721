@@ -13,7 +13,7 @@ use cap_sdk::IndefiniteEvent;
 use std::convert::TryInto;
 
 use ic_kit::interfaces::management::{CanisterStatus, CanisterStatusResponse, WithCanisterId};
-use ic_kit::interfaces::{Method};
+use ic_kit::interfaces::Method;
 
 pub fn caller() -> Principal {
     ic_kit::ic::caller()
@@ -99,13 +99,13 @@ pub fn tx_log<'a>() -> &'a mut TxLog {
 pub fn has_ownership(ledger: &Ledger, enquire_principal: &Principal, token_id: u64) -> bool {
     match ledger.owner_of(&token_id.to_string()) {
         Ok(owner_actual_principal) => owner_actual_principal == *enquire_principal,
-        _ => false
+        _ => false,
     }
 }
 
 pub fn has_approval(ledger: &Ledger, enquire_principal: &Principal, token_id: u64) -> bool {
     // Check if the token does exist
-    if ! ledger.does_token_exist(token_id) {
+    if !ledger.does_token_exist(token_id) {
         return false;
     }
 
@@ -123,14 +123,19 @@ pub fn has_approval(ledger: &Ledger, enquire_principal: &Principal, token_id: u6
                 // TODO: consider the "account" case too
                 _ => false,
             }
-        },
+        }
         _ => false,
     }
 }
 
-pub async fn has_ownership_or_approval(ledger: &Ledger, enquire_principal: &Principal, to_principal: &Principal, token_id: u64) -> bool {
+pub async fn has_ownership_or_approval(
+    ledger: &Ledger,
+    enquire_principal: &Principal,
+    to_principal: &Principal,
+    token_id: u64,
+) -> bool {
     // Check if the token does exist
-    if ! ledger.does_token_exist(token_id) {
+    if !ledger.does_token_exist(token_id) {
         return false;
     }
 
@@ -141,10 +146,11 @@ pub async fn has_ownership_or_approval(ledger: &Ledger, enquire_principal: &Prin
 
     // Either has ownership, is a controller or is approved
     // otherwise, exit immediately
-    if ! has_ownership(ledger, enquire_principal, token_id)
-    && ! has_approval(ledger, enquire_principal, token_id) 
-    && ! ledger.is_approved_for_all(enquire_principal, to_principal) 
-    && ! is_controller(&enquire_principal).await {
+    if !has_ownership(ledger, enquire_principal, token_id)
+        && !has_approval(ledger, enquire_principal, token_id)
+        && !ledger.is_approved_for_all(enquire_principal, to_principal)
+        && !is_controller(&enquire_principal).await
+    {
         return false;
     }
 
@@ -185,9 +191,7 @@ mod tests {
     use ic_kit::async_test;
 
     fn setup_ledger(principal: &Principal) -> Ledger {
-        MockContext::new()
-            .with_caller(principal.clone())
-            .inject();
+        MockContext::new().with_caller(principal.clone()).inject();
 
         let mut ledger = Ledger::default();
         let metadata_desc = vec![MetadataPart {
@@ -240,7 +244,10 @@ mod tests {
         assert_eq!(ledger.is_approved_for_all(alice, john), true);
 
         // Should John be approved in behalf of Alice
-        assert_eq!(has_ownership_or_approval(&ledger, alice, john, 0).await, true);
+        assert_eq!(
+            has_ownership_or_approval(&ledger, alice, john, 0).await,
+            true
+        );
 
         // Should John NOT have approval all
         ledger.set_approval_for_all(john, false);

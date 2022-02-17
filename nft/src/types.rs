@@ -321,10 +321,12 @@ pub struct TxLog {
 pub struct StableStorageBorrowed<'a> {
     pub ledger: &'a Ledger,
     pub token: &'a TokenLevelMetadata,
+    pub assets: &'a ic_certified_assets::StableState,
 }
 
 #[derive(CandidType, Deserialize)]
 pub struct StableStorage {
     pub ledger: Ledger,
     pub token: TokenLevelMetadata,
+    pub assets: ic_certified_assets::StableState,
 }

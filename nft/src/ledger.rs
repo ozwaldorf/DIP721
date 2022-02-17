@@ -87,19 +87,28 @@ impl Ledger {
             .collect()
     }
 
-    pub async fn approve(&self, enquire_principal: &Principal, approves_principal: &Principal, token_id: u64) {
+    pub async fn approve(
+        &self,
+        enquire_principal: &Principal,
+        approves_principal: &Principal,
+        token_id: u64,
+    ) {
         let ledger_instance = ledger();
 
-        if ! has_ownership_or_approval(ledger_instance, enquire_principal, approves_principal, token_id).await {
+        if !has_ownership_or_approval(
+            ledger_instance,
+            enquire_principal,
+            approves_principal,
+            token_id,
+        )
+        .await
+        {
             return;
         }
 
         ledger()
             .token_approvals
-            .insert(
-                token_id,
-                User::from(approves_principal.clone()),
-            );
+            .insert(token_id, User::from(approves_principal.clone()));
     }
 
     pub fn set_approval_for_all(&self, approves_principal: &Principal, approved: bool) {
@@ -109,13 +118,13 @@ impl Ledger {
             return;
         }
 
-        let approvals = ledger()
-            .operator_approvals
-            .entry(user.clone())
-            .or_default();
+        let approvals = ledger().operator_approvals.entry(user.clone()).or_default();
 
-        if ! approved {
-            if let Some(index) = approvals.iter().position(|listed_user| *listed_user == User::principal(*approves_principal)) {
+        if !approved {
+            if let Some(index) = approvals
+                .iter()
+                .position(|listed_user| *listed_user == User::principal(*approves_principal))
+            {
                 approvals.remove(index);
             }
 
@@ -125,40 +134,33 @@ impl Ledger {
         approvals.push(User::from(approves_principal.clone()));
     }
 
-    pub fn is_approved_for_all(&self, owner: &Principal, operator: &Principal) -> bool {        
+    pub fn is_approved_for_all(&self, owner: &Principal, operator: &Principal) -> bool {
         let approvals = ledger()
             .operator_approvals
             .get(&User::principal(owner.clone()));
 
-        approvals.map_or(
-            false,
-            |list| list.contains(
-                &User::principal(operator.clone())
-            ),
-        )
+        approvals.map_or(false, |list| {
+            list.contains(&User::principal(operator.clone()))
+        })
     }
 
     pub fn get_approved(&self, token_id: u64) -> Result<User, ApiError> {
-        let approved_result = ledger()
-            .token_approvals
-            .get(&token_id);
+        let approved_result = ledger().token_approvals.get(&token_id);
 
         match approved_result {
             Some(user) => Ok(user.clone()),
-            None => Err(ApiError::Unauthorized)
+            None => Err(ApiError::Unauthorized),
         }
     }
 
     // TODO: Seems best to return the first controller in the list
     // as the owner, as such the owner field should be removed from the contructor
     pub fn owner_of(&self, token_identifier: &TokenIdentifier) -> OwnerResult {
-        let token_result = ledger()
-            .tokens
-            .get(&into_token_index(&token_identifier));
+        let token_result = ledger().tokens.get(&into_token_index(&token_identifier));
 
         match token_result {
             Some(token_metadata) => OwnerResult::Ok(token_metadata.principal.clone()),
-            _ => OwnerResult::Err(ApiError::InvalidTokenId)
+            _ => OwnerResult::Err(ApiError::InvalidTokenId),
         }
     }
 

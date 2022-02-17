@@ -205,6 +205,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "23ce669cd6c8588f79e15cf450314f9638f967fc5770ff1c7c1deb0925ea7cfa"
 
 [[package]]
+name = "base64"
+version = "0.13.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "904dfeac50f3cdaba28fc6f57fdcddb75f49ed61346676a78c4ffe55877802fd"
+
+[[package]]
 name = "beef"
 version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -351,7 +357,7 @@ dependencies = [
  "async-stream",
  "cap-sdk-core",
  "futures",
- "ic-cdk",
+ "ic-cdk 0.3.3",
  "ic-kit",
  "lazy_static",
  "serde",
@@ -363,7 +369,7 @@ name = "cap-sdk-core"
 version = "0.1.0-alpha1"
 source = "git+https://github.com/Psychedelic/cap?branch=cap-sdk#d57a2bc660b0b35f95c2cfec76dd723c43bdc2a6"
 dependencies = [
- "ic-cdk",
+ "ic-cdk 0.3.3",
  "ic-history-common",
  "ic-kit",
  "serde",
@@ -378,7 +384,7 @@ dependencies = [
  "bincode",
  "candid",
  "cap-sdk",
- "ic-cdk",
+ "ic-cdk 0.3.3",
  "serde",
  "thiserror",
 ]
@@ -411,7 +417,7 @@ version = "0.1.0"
 dependencies = [
  "crc32fast",
  "hex",
- "ic-cdk",
+ "ic-cdk 0.3.3",
  "ic-kit",
  "ic-types 0.2.2",
  "serde",
@@ -739,18 +745,64 @@ dependencies = [
 ]
 
 [[package]]
+name = "ic-cdk"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0e511d1a019e620d5a3dc43bead7d3c46912bf4f4bfb1d602059046c7a22bb1e"
+dependencies = [
+ "candid",
+ "cfg-if",
+ "serde",
+]
+
+[[package]]
 name = "ic-cdk-macros"
 version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "08bac2578a4779c3ae6d24c766ec7127872d73f29a9e7d70b6607a2fdedd0dde"
 dependencies = [
  "candid",
- "ic-cdk",
+ "ic-cdk 0.3.3",
  "proc-macro2",
  "quote",
  "serde",
  "serde_tokenstream",
  "syn",
+]
+
+[[package]]
+name = "ic-cdk-macros"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a59a186745fd7d96ba2e057f3b3e3038578ae1e82dcb548bd96f48e9e4a39129"
+dependencies = [
+ "candid",
+ "ic-cdk 0.4.0",
+ "proc-macro2",
+ "quote",
+ "serde",
+ "serde_tokenstream",
+ "syn",
+]
+
+[[package]]
+name = "ic-certified-assets"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9a5dc86809123e0908c1a388089ef04f0daad605616eda76d3a9f75418f6ccca"
+dependencies = [
+ "base64",
+ "candid",
+ "hex",
+ "ic-cdk 0.4.0",
+ "ic-cdk-macros 0.4.0",
+ "ic-certified-map 0.3.0",
+ "ic-types 0.3.0",
+ "num-traits",
+ "serde",
+ "serde_bytes",
+ "serde_cbor",
+ "sha2",
 ]
 
 [[package]]
@@ -765,13 +817,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "ic-certified-map"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "76c7889064a08b87d6ccf3241e7a5b4dfded4863ec724d24441dfc16df2b3023"
+dependencies = [
+ "serde",
+ "serde_bytes",
+ "sha2",
+]
+
+[[package]]
 name = "ic-history-common"
 version = "0.1.0"
 source = "git+https://github.com/Psychedelic/cap?branch=cap-sdk#d57a2bc660b0b35f95c2cfec76dd723c43bdc2a6"
 dependencies = [
  "async-std",
- "ic-cdk",
- "ic-certified-map",
+ "ic-cdk 0.3.3",
+ "ic-certified-map 0.1.0",
  "ic-kit",
  "serde",
  "serde_bytes",
@@ -787,8 +850,8 @@ checksum = "2a0d4a05326865a582add1d6bcdec2b5d2af0415a12f6ef2431f3e93e52c347a"
 dependencies = [
  "async-std",
  "futures",
- "ic-cdk",
- "ic-cdk-macros",
+ "ic-cdk 0.3.3",
+ "ic-cdk-macros 0.3.3",
  "serde",
  "serde_bytes",
 ]
@@ -983,7 +1046,8 @@ dependencies = [
  "cap-standards",
  "common",
  "derive-new",
- "ic-cdk",
+ "ic-cdk 0.3.3",
+ "ic-certified-assets",
  "ic-kit",
  "serde",
  "serde_bytes",

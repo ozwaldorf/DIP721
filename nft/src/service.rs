@@ -30,7 +30,7 @@ async fn safe_transfer_from_dip721(_from: Principal, to: Principal, token_id: u6
     let ledger_instance = ledger();
     let caller = ic::caller();
 
-    if ! has_ownership_or_approval(ledger_instance, &caller, &to, token_id).await {
+    if !has_ownership_or_approval(ledger_instance, &caller, &to, token_id).await {
         return Err(ApiError::Unauthorized);
     }
 
@@ -67,7 +67,7 @@ async fn transfer_from_dip721(_from: Principal, to: Principal, token_id: u64) ->
     let ledger_instance = ledger();
     let caller = ic::caller();
 
-    if ! has_ownership_or_approval(ledger_instance, &caller, &to, token_id).await {
+    if !has_ownership_or_approval(ledger_instance, &caller, &to, token_id).await {
         return Err(ApiError::Unauthorized);
     }
 
@@ -142,9 +142,9 @@ fn get_token_ids_for_user_dip721(user: Principal) -> Vec<u64> {
 
 // Implementations are encouraged to only allow minting by the owner of the smart contract
 #[update(name = "mintDip721")]
-async fn mint_dip721(to: Principal, metadata_desc: MetadataDesc) -> MintReceipt {        
+async fn mint_dip721(to: Principal, metadata_desc: MetadataDesc) -> MintReceipt {
     let caller = ic::caller();
-    if ! is_controller(&caller).await {
+    if !is_controller(&caller).await {
         return Err(ApiError::Unauthorized);
     }
 
@@ -178,7 +178,7 @@ async fn transfer(transfer_request: TransferRequest) -> TransferResponse {
         _ => panic!("Oops! Unexpected transfer request to"),
     };
 
-    if ! has_ownership_or_approval(ledger_instance, &caller, &to_principal, *token_id).await {
+    if !has_ownership_or_approval(ledger_instance, &caller, &to_principal, *token_id).await {
         return Err(TransferError::Unauthorized("Unauthorized".to_string()));
     }
 
@@ -197,15 +197,11 @@ async fn transfer(transfer_request: TransferRequest) -> TransferResponse {
         &transfer_request.token,
     );
 
-
     let event = IndefiniteEventBuilder::new()
         .caller(caller)
         .operation("transfer")
         .details(vec![
-            (
-                "from".into(),
-                user_to_detail_value(User::principal(caller)),
-            ),
+            ("from".into(), user_to_detail_value(User::principal(caller))),
             ("to".into(), user_to_detail_value(transfer_request.to)),
             ("token_id".into(), DetailValue::U64(*token_id)),
         ])
@@ -245,6 +241,7 @@ fn store_data_in_stable_store() {
     let data = StableStorageBorrowed {
         ledger: ledger(),
         token: token_level_metadata(),
+        assets: &ic_certified_assets::pre_upgrade(),
     };
     ic::stable_store((data,)).expect("failed");
 }
@@ -253,10 +250,14 @@ fn restore_data_from_stable_store() {
     let (data,): (StableStorage,) = ic::stable_restore().expect("failed");
     ic::store(data.ledger);
     ic::store(data.token);
+    ic_certified_assets::post_upgrade(data.assets);
 }
 
 #[init]
 fn init(owner: Principal, symbol: String, name: String, history: Principal) {
+    ic_certified_assets::init();
+    ic_cdk::api::print(&ic_cdk::caller().to_text());
+
     *token_level_metadata() = TokenLevelMetadata::new(Some(owner), symbol, name, Some(history));
     handshake(1_000_000_000_000, Some(history));
 }
